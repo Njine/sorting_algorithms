@@ -1,113 +1,80 @@
 #include <stdio.h>
-#include <stdlib.h>
 #include "sort.h"
 
-void merge(int *array, int *buffer, size_t min, size_t mid, size_t max);
-void merge_sort_recursive(int *array, int *buffer, size_t min, size_t max);
+/* Function prototype for print_array */
+void print_array(const int *array, size_t size);
+
+/* Function prototype for lomuto_partition */
+int lomuto_partition(int *array, int low, int high, size_t size);
+
+/* Function prototype for qsh_helper */
+void qsh_helper(int *array, int low, int high, size_t size);
 
 /**
- * merge_sort - Sorts an array of integers in ascending order
- * using the Merge sort algorithm.
- * @array: Array to be sorted.
- * @size: Size of the array.
+ * quick_sort - sorts an array of integers in ascending order
+ * using the Quick sort algorithm with the Lomuto partition scheme.
+ * @array: array to sort
+ * @size: size of the array
  */
-void merge_sort(int *array, size_t size)
+void quick_sort(int *array, size_t size)
 {
     if (array == NULL || size < 2)
         return;
 
-    int *buffer = malloc(sizeof(int) * size);
-    if (buffer == NULL)
-        return;
-
-    merge_sort_recursive(array, buffer, 0, size - 1);
-    free(buffer);
+    qsh_helper(array, 0, size - 1, size);
 }
 
 /**
- * merge_sort_recursive - Recursively sorts the array using Merge sort.
- * @array: Array to be sorted.
- * @buffer: Temporary buffer for merging.
- * @min: Minimum index of the subarray.
- * @max: Maximum index of the subarray.
+ * qsh_helper - recursive helper function for quick_sort
+ * @array: array to sort
+ * @low: lowest index of the partition to sort
+ * @high: highest index of the partition to sort
+ * @size: size of the array
  */
-void merge_sort_recursive(int *array, int *buffer, size_t min, size_t max)
+void qsh_helper(int *array, int low, int high, size_t size)
 {
-    if (min < max)
+    int pivot;
+
+    if (low < high)
     {
-        size_t mid = min + (max - min) / 2;
-        merge_sort_recursive(array, buffer, min, mid);
-        merge_sort_recursive(array, buffer, mid + 1, max);
-        merge(array, buffer, min, mid, max);
+        pivot = lomuto_partition(array, low, high, size);
+        qsh_helper(array, low, pivot - 1, size);
+        qsh_helper(array, pivot + 1, high, size);
     }
 }
 
 /**
- * merge - Merges two sorted subarrays into a single sorted array.
- * @array: Original array containing the subarrays.
- * @buffer: Temporary buffer for merging.
- * @min: Minimum index of the left subarray.
- * @mid: Maximum index of the left subarray.
- * @max: Maximum index of the right subarray.
+ * lomuto_partition - partitions an array using the Lomuto partition scheme
+ * @array: array to partition
+ * @low: lowest index of the partition to sort
+ * @high: highest index of the partition to sort
+ * @size: size of the array
+ *
+ * Return: index of the pivot element
  */
-void merge(int *array, int *buffer, size_t min, size_t mid, size_t max)
+int lomuto_partition(int *array, int low, int high, size_t size)
 {
-    size_t i = min, j = mid + 1, k = min;
+    int pivot = array[high];
+    int i = low - 1;
+    int j;
+    int tmp;
 
-    printf("Merging...\n");
-    printf("[left]: ");
-    for (size_t l = min; l <= mid; l++)
+    for (j = low; j <= high - 1; j++)
     {
-        printf("%d", array[l]);
-        if (l < mid)
-            printf(", ");
-    }
-    printf("\n");
-
-    printf("[right]: ");
-    for (size_t r = mid + 1; r <= max; r++)
-    {
-        printf("%d", array[r]);
-        if (r < max)
-            printf(", ");
-    }
-    printf("\n");
-
-    while (i <= mid && j <= max)
-    {
-        if (buffer[i] <= buffer[j])
+        if (array[j] < pivot)
         {
-            array[k] = buffer[i];
             i++;
+            tmp = array[i];
+            array[i] = array[j];
+            array[j] = tmp;
+            print_array(array, size);
         }
-        else
-        {
-            array[k] = buffer[j];
-            j++;
-        }
-        k++;
     }
 
-    while (i <= mid)
-    {
-        array[k] = buffer[i];
-        i++;
-        k++;
-    }
+    tmp = array[i + 1];
+    array[i + 1] = array[high];
+    array[high] = tmp;
+    print_array(array, size);
 
-    while (j <= max)
-    {
-        array[k] = buffer[j];
-        j++;
-        k++;
-    }
-
-    printf("[Done]: ");
-    for (size_t l = min; l <= max; l++)
-    {
-        printf("%d", array[l]);
-        if (l < max)
-            printf(", ");
-    }
-    printf("\n");
+    return (i + 1);
 }
