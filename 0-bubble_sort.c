@@ -1,33 +1,30 @@
 #include "sort.h"
 
 /**
- * selection_sort - Sorts an array of integers in ascending order using Selection Sort
- * @array: The array to be sorted
- * @size: Number of elements in the array
+ * bubble_sort - Prints a list of integers
+ *
+ * @array: The list to be printed
+ * @size: the size of array
  */
-void selection_sort(int *array, size_t size)
+
+void bubble_sort(int *array, size_t  size)
 {
-    size_t outer, inner;
-    int temp;
+	unsigned int i, j, aux;
 
-    if (!array || size < 2)
-        return;
+	if (!array || size < 2)
+		return;
 
-    outer = 0;
-    while (outer < size - 1)
-    {
-        inner = 0;
-        while (inner < size - 1)
-        {
-            if (array[inner] > array[inner + 1])
-            {
-                temp = array[inner];
-                array[inner] = array[inner + 1];
-                array[inner + 1] = temp;
-                print_array(array, size);
-            }
-            inner++;
-        }
-        outer++;
-    }
+	for (i = 0; i < size - 1; i++)
+	{
+		for (j = 0; j < size - 1; j++)
+		{
+			if (array[j] > array[j + 1])
+			{
+				aux = array[j];
+				array[j] = array[j + 1];
+				array[j + 1] = aux;
+				print_array(array, size);
+			}
+		}
+	}
 }
