@@ -2,10 +2,9 @@
 #include "sort.h"
 
 /**
- * quick_sort - Sorts an array of integers in ascending order using the
- * Quick sort algorithm
- * @array: Array to be sorted
- * @size: Size of the array
+ * quick_sort - Sorts an array of integers in ascending order using Quick sort.
+ * @array: Array to sort.
+ * @size: Size of the array.
  */
 void quick_sort(int *array, size_t size)
 {
@@ -16,59 +15,61 @@ void quick_sort(int *array, size_t size)
 }
 
 /**
- * quick_sort_helper - Recursive helper function for quick_sort
- * @array: Array to be sorted
- * @lo: Lower index of the partition to be sorted
- * @hi: Upper index of the partition to be sorted
- * @size: Size of the array
+ * quick_sort_helper - Recursive helper function for quick_sort.
+ * @array: Array to sort.
+ * @lo: Lower index of partition to sort.
+ * @hi: Upper index of partition to sort.
+ * @size: Size of the array.
  */
 void quick_sort_helper(int *array, int lo, int hi, size_t size)
 {
-	int p;
+	int x;
 
 	while (lo < hi)
 	{
-		p = partition(array, lo, hi, size);
-		quick_sort_helper(array, lo, p - 1, size);
-		lo = p + 1;
+		x = partition(array, lo, hi, size);
+		quick_sort_helper(array, lo, x - 1, size);
+		lo = x + 1;
 	}
 }
 
 /**
- * partition - Partitions an array of integers using the Lomuto scheme
- * @array: Array to be partitioned
- * @lo: Lower index of the partition to be sorted
- * @hi: Upper index of the partition to be sorted
- * @size: Size of the array
+ * partition - Partitions an array of integers using the Lomuto scheme.
+ * @array: Array to partition.
+ * @lo: Lower index of partition to sort.
+ * @hi: Upper index of partition to sort.
+ * @size: Size of the array.
  *
- * Return: Index of the pivot element
+ * Return: Index of the pivot element.
  */
 int partition(int *array, int lo, int hi, size_t size)
 {
-	int pivot = array[hi];
-	int i = lo - 1;
-	int j = lo;
+	int k, j, pivot, temp;
 
-	while (j <= hi - 1)
+	pivot = array[hi];
+	k = lo - 1;
+
+	for (j = lo; j <= hi - 1; j++)
 	{
 		if (array[j] <= pivot)
 		{
-			i++;
-			int tmp = array[i];
-			array[i] = array[j];
-			array[j] = tmp;
-			print_array(array, size);
+			k++;
+			if (k != j)
+			{
+				temp = array[k];
+				array[k] = array[j];
+				array[j] = temp;
+				print_array(array, size);
+			}
 		}
-		j++;
 	}
 
-	if (i + 1 != hi)
+	if (k + 1 != hi)
 	{
-		int tmp = array[i + 1];
-		array[i + 1] = array[hi];
-		array[hi] = tmp;
+		temp = array[k + 1];
+		array[k + 1] = array[hi];
+		array[hi] = temp;
 		print_array(array, size);
 	}
-
-	return i + 1;
+	return (k + 1);
 }
