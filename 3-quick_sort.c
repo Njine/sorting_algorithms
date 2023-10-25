@@ -22,12 +22,16 @@ void quick_sort(int *array, size_t size)
  * @hi: upper index of partition to sort
  * @size: size of the array
  */
-void quick_sort_helper(int *array, int lo, int hi, size_t size) {
-  if (lo < hi) {
-    int p = partition(array, lo, hi, size);
-    quick_sort_helper(array, lo, p - 1, size);
-    quick_sort_helper(array, p + 1, hi, size);
-  }
+void quick_sort_helper(int *array, int lo, int hi, size_t size)
+{
+	int p;
+
+	if (lo < hi)
+	{
+		p = partition(array, lo, hi, size);
+		quick_sort_helper(array, lo, p - 1, size);
+		quick_sort_helper(array, p + 1, hi, size);
+	}
 }
 
 /**
@@ -39,25 +43,34 @@ void quick_sort_helper(int *array, int lo, int hi, size_t size) {
  *
  * Return: index of the pivot element
  */
-int partition(int *array, int lo, int hi, size_t size) {
-  int pivot = array[hi];
-  int i = lo - 1;
+int partition(int *array, int lo, int hi, size_t size)
+{
+	int i, j, pivot, tmp;
 
-  for (int j = lo; j <= hi - 1; j++) {
-    if (array[j] <= pivot) {
-      i++;
-      int tmp = array[i];
-      array[i] = array[j];
-      array[j] = tmp;
-      print_array(array, size);
-    }
-  }
+	pivot = array[hi];
+	i = lo - 1;
 
-  if (i + 1 != hi) {
-    int tmp = array[i + 1];
-    array[i + 1] = array[hi];
-    array[hi] = tmp;
-    print_array(array, size);
-  }
-  return i + 1;
+	for (j = lo; j <= hi - 1; j++)
+	{
+		if (array[j] <= pivot)
+		{
+			i++;
+			if (i != j)
+			{
+				tmp = array[i];
+				array[i] = array[j];
+				array[j] = tmp;
+				print_array(array, size);
+			}
+		}
+	}
+
+	if (i + 1 != hi)
+	{
+		tmp = array[i + 1];
+		array[i + 1] = array[hi];
+		array[hi] = tmp;
+		print_array(array, size);
+	}
+	return (i + 1);
 }
