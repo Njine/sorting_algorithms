@@ -3,10 +3,11 @@
 #include "sort.h"
 
 /**
- * copy - Copy data from one buffer to another
- * @src: Source buffer
- * @dst: Destination buffer
- * @size: Size of buffers
+ * copy - copies data from one buffer to another
+ *
+ * @src: source buffer
+ * @dst: destination buffer
+ * @size: size of buffers
  *
  * Return: No Return
  */
@@ -17,59 +18,45 @@ void copy(int *src, int *dst, int size)
 	for (i = 0; i < size; i++)
 		dst[i] = src[i];
 }
-
 /**
- * merge - Merge two sets of data in ascending order (previously sorted)
+ * merge - Merges two sorted sets of data in ascending order.
+ *
  * @array: First set of data
  * @buff: Second set of data
- * @minL: Lower range of the first set of data
- * @maxL: Upper range of the first set of data
- * @minR: Lower range of the second set of data
- * @maxR: Upper range of the second set of data
- *
- * Return: No Return
+ * @minFirst: Lower range of the first set of data
+ * @maxFirst: Upper range of the first set of data
+ * @minSecond: Lower range of the second set of data
+ * @maxSecond: Upper range of the second set of data
  */
-void merge(int *array, int *buff, int minL, int maxL, int minR, int maxR)
+void merge(int *array, int *buff, int minFirst, int maxFirst, int minSecond, int maxSecond)
 {
-	int i = minL, j = minR, k = minL;
+    int i = minFirst, j = minSecond, k = minFirst;
 
-	for (; i <= maxL || j <= maxR;)
-	{
-		if (i <= maxL && j <= maxR)
-		{
-			if (buff[i] <= buff[j])
-			{
-				array[k] = buff[i];
-				k++;
-				i++;
-			}
-			else
-			{
-				array[k] = buff[j];
-				k++;
-				j++;
-			}
-		}
-		else if (i > maxL && j <= maxR)
-		{
-			array[k] = buff[j];
-			k++;
-			j++;
-		}
-		else
-		{
-			array[k] = buff[i];
-			k++;
-			i++;
-		}
-	}
+    while (i <= maxFirst || j <= maxSecond)
+    {
+        if (i <= maxFirst && j <= maxSecond)
+        {
+            if (buff[i] <= buff[j])
+                array[k] = buff[i], k++, i++;
+            else
+                array[k] = buff[j], k++, j++;
+        }
+        else if (i > maxFirst && j <= maxSecond)
+        {
+            array[k] = buff[j], k++, j++;
+        }
+        else
+        {
+            array[k] = buff[i], k++, i++;
+        }
+    }
 }
-
 /**
- * printcheck - Print an array in a given range
- * @array: Array of data to be printed
- * @r1: Start of range
- * @r2: End of range
+ * printcheck - prints an array in a given range
+ *
+ * @array: array of data to be print
+ * @r1: start of range
+ * @r2: end of range
  *
  * Return: No Return
  */
@@ -85,14 +72,14 @@ void printcheck(int *array, int r1, int r2)
 	}
 	printf("\n");
 }
-
 /**
- * split - Recursive function to split data into a merge tree
- * @array: Array of data to be split
- * @buff: Auxiliary array of data for merging
- * @min: Min range of data in the array
- * @max: Max range of data in the array
- * @size: Size of the total data
+ * split - recursive function to split data into merge tree
+ *
+ * @array: array of data to be split
+ * @buff: auxiliary array of data for merging
+ * @min: min range of data in array
+ * @max: max range of data in array
+ * @size: size of total data
  *
  * Return: No Return
  */
@@ -122,8 +109,11 @@ void split(int *array, int *buff, int min, int max, int size)
 
 	printf("Merging...\n");
 	printf("[left]: ");
+
 	printcheck(array, minL, maxL);
+
 	printf("[right]: ");
+
 	printcheck(array, minR, maxR);
 	merge(array, buff, minL, maxL, minR, maxR);
 	copy(array, buff, size);
@@ -131,12 +121,12 @@ void split(int *array, int *buff, int min, int max, int size)
 	printf("[Done]: ");
 	printcheck(array, minL, maxR);
 }
-
 /**
- * merge_sort - Sorts an array of integers in ascending order using
- * the Merge sort algorithm
- * @array: Array of data to be sorted
- * @size: Size of data
+ * merge_sort - sorts an array of integers in ascending order
+ * using the Merge sort algorithm
+ *
+ * @array: array of data to be sorted
+ * @size: size of data
  *
  * Return: No Return
  */
