@@ -1,5 +1,6 @@
 #include <stdlib.h>
 #include "sort.h"
+
 /**
  * csort2 - auxiliary function of radix sort
  *
@@ -10,39 +11,46 @@
  *
  * Return: No Return
  */
-void csort2(int *array, int **buff, int size, int lsd)
+void csort2(int *array, int **buff, size_t size, int lsd)
 {
-	int i, j, sizey = 10, dig;
-	int cr[10] = {0, 0, 0, 0, 0, 0, 0, 0, 0, 0};
-	int cr2[10] = {0, 0, 0, 0, 0, 0, 0, 0, 0, 0};
+    int digit, index, counter = 10;
+    int count_dig[10] = {0};
+    int next_index[10] = {0};
 
-	i = 0;
-  do {
-    dig = array[i];
-    for (j = 0; j < lsd; j++) {
-      if (j > 0) {
-        dig = dig / 10;
-      }
+    for (size_t k = 0; k < size; k++)
+    {
+        digit = array[k];
+        for (index = 0; index < lsd; index++)
+        {
+            if (index > 0)
+                digit = digit / 10;
+        }
+        digit = digit % 10;
+        buff[digit][next_index[digit]] = array[k];
+        next_index[digit] += 1;
     }
-    dig = dig % 10;
-    cr[dig] += 1;
-    i++;
-  } while (i < size);
 
-  i = 0;
-  j = 0;
-  do {
-    while (cr[i] > 0) {
-      array[j] = buff[i][cr2[i]];
-      cr2[i] += 1;
-      cr[i] -= 1;
-      j++;
+    for (int m = 1; m < counter; m++)
+    {
+        count_dig[m] += count_dig[m - 1];
     }
-    i++;
-  } while (i < sizey);
 
-  print_array(array, size);
+    for (size_t k = size; k > 0; k--)
+    {
+        digit = array[k - 1];
+        for (index = 0; index < lsd; index++)
+        {
+            if (index > 0)
+                digit = digit / 10;
+        }
+        digit = digit % 10;
+        array[--count_dig[digit]] = buff[digit][next_index[digit] - 1];
+        next_index[digit] -= 1;
+    }
+
+    print_array(array, size);
 }
+
 /**
  * csort - auxiliary function of radix sort
  *
@@ -52,45 +60,53 @@ void csort2(int *array, int **buff, int size, int lsd)
  *
  * Return: No Return
  */
-void csort(int *array, int size, int lsd)
+void csort(int *array, size_t size, int lsd)
 {
-	int cr[10] = {0, 0, 0, 0, 0, 0, 0, 0, 0, 0};
-	int i, j, dig, sizey = 10, **buff;
+    int count_dig[10] = {0};
+    int digit, index, counter = 10;
+    int **buff = malloc(sizeof(int *) * 10);
 
-	for (i = 0; i < size; i++)
-	{
-		dig = array[i];
-		for (j = 0; j < lsd; j++)
-			if (j > 0)
-				dig = dig / 10;
-		dig = dig % 10;
-		cr[dig] += 1;
-	}
+    if (!buff)
+        return;
 
-	if (cr[0] == size)
-		return;
+    for (size_t k = 0; k < size; k++)
+    {
+        digit = array[k];
+        for (index = 0; index < lsd; index++)
+        {
+            if (index > 0)
+                digit = digit / 10;
+        }
+        digit = digit % 10;
+        count_dig[digit] += 1;
+    }
 
-	buff = malloc(sizeof(int *) * 10);
-	if (!buff)
-		return;
+    if (count_dig[0] == size)
+    {
+        free(buff);
+        return;
+    }
 
-	for (i = 0; i < sizey; i++)
-		if (cr[i] != 0)
-			buff[i] = malloc(sizeof(int) * cr[i]);
+    for (int m = 0; m < counter; m++)
+    {
+        if (count_dig[m] != 0)
+            buff[m] = malloc(sizeof(int) * count_dig[m]);
+        else
+            buff[m] = NULL;
+    }
 
+    csort2(array, buff, size, lsd);
 
-	csort2(array, buff, size, lsd);
-
-	csort(array, size, lsd + 1);
-
-	for (i = 0; i < sizey; i++)
-		if (cr[i] > 0)
-			free(buff[i]);
-	free(buff);
+    for (int m = 0; m < counter; m++)
+    {
+        if (count_dig[m] > 0)
+            free(buff[m]);
+    }
+    free(buff);
 }
+
 /**
- * radix_sort - sorts an array of integers in ascending order using the Radix
- * sort algorithm
+ * radix_sort - sorts an array of integers in ascending order using the Radix sort algorithm
  *
  * @array: array of data to be sorted
  * @size: size of data
@@ -99,7 +115,7 @@ void csort(int *array, int size, int lsd)
  */
 void radix_sort(int *array, size_t size)
 {
-	if (size < 2)
-		return;
-	csort(array, size, 1);
+    if (size < 2)
+        return;
+    csort(array, size, 1);
 }
