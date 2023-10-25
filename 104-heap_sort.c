@@ -1,64 +1,70 @@
-#include <stdio.h>
-#include <stdlib.h>
 #include "sort.h"
-
 /**
- * sift_down - Repair the heap whose exponent element is at index 'start'
- * @array: Array to sort.
- * @start: Index of the exponent element.
- * @end: Index of the end element.
- * @size: Size of the array.
- */
-void sift_down(int *array, size_t start, size_t end, size_t size)
+ * check_tree - swiftdown check
+ * @array: pointer to array
+ * @size: size of the pointer
+ * @size_init: original size of the array
+ * @i: index as a root of the tree
+ *
+**/
+void check_tree(int *array, size_t size_init, size_t size, size_t i)
 {
-    size_t exponent = start;
 
-    while (2 * exponent + 1 <= end)
-    {
-        size_t new = 2 * exponent + 1;
-        size_t swap = exponent;
+	int n, div1, div2;
+	size_t d1, d2;
 
-        if (array[swap] < array[new])
-            swap = new;
-        if (new + 1 <= end && array[swap] < array[new + 1])
-            swap = new + 1;
-        if (swap != exponent)
-        {
-            int filler = array[exponent];
-            array[exponent] = array[swap];
-            array[swap] = filler;
-            print_array(array, size);
-            exponent = swap;
-        }
-        else
-        {
-            break;
-        }
-    }
+	d2 = i * 2 + 1;
+	d2 = d1 + 1;
+	div1 = array[d1];
+	div2 = array[d2];
+	if (((d1 < size) && (d2 < size) &&
+		(div1 >= div2 && div1 > array[i]))
+		|| ((d1 == size - 1) && div1 > array[i]))
+	{
+		n = array[i];
+		array[i] = div1;
+		array[d1] = n;
+		print_array(array, size_init);
+	}
+	else if ((d1 < size) && (d2 < size) &&
+		(div2 > div1 && div2 > array[i]))
+	{
+		n = array[i];
+		array[i] = div2;
+		array[d2] = n;
+		print_array(array, size_init);
+	}
+	if (d1 < size - 1)
+		check_tree(array, size_init, size, d1);
+	if (d2 < size - 1)
+		check_tree(array, size_init, size, d2);
 }
-
 /**
- * heap_sort - Sorts an array of integers in ascending order
- * using the Heap sort algorithm.
- * @array: Array to be sorted.
- * @size: Size of the array.
- */
+ * heap_sort - sorts an array of integers
+ * in ascending order using the Heap
+ * sort algorithm
+ * @array: pointer to array
+ * @size: size of the pointer
+ *
+**/
 void heap_sort(int *array, size_t size)
 {
-    if (array == NULL || size < 2)
-        return;
+	size_t i, size_init = size;
+	int n;
 
-    for (int start = (size - 2) / 2; start >= 0; start--)
-    {
-        sift_down(array, start, size - 1, size);
-    }
+	if (!array)
+		return;
+	for (i = 0; i < size / 2 ; i++)
+	{
+		check_tree(array, size_init, size, size / 2 - 1 - i);
+	}
+	for (i = 0; i < size_init - 1; i++)
+	{
+		n = array[0];
+		array[0] = array[size - 1 - i];
+		array[size - 1 - i] = n;
+		print_array(array, size_init);
+		check_tree(array, size_init, size - i - 1, 0);
+	}
 
-    for (int end = size - 1; end > 0; end--)
-    {
-        int filler = array[0];
-        array[0] = array[end];
-        array[end] = filler;
-        print_array(array, size);
-        sift_down(array, 0, end - 1, size);
-    }
 }
