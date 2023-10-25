@@ -4,7 +4,7 @@
 /**
  * insertion_sort_list - sorts a DLL of integers in
  * ascending
- * 
+ *
  * @list: doubly linked list
  * Return: no return
  */
